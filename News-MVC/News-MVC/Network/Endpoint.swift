@@ -9,10 +9,21 @@
 import Foundation
 
 protocol Endpoint {
-    var baseURL: URL? { get }
+    var baseURL: String? { get }
     var path: String { get }
     var queryItems: [URLQueryItem] { get }
     var httpMethod: HTTPMethod { get }
+}
+
+extension Endpoint {
+    var url: URL? {
+        var urlComponents = URLComponents()
+        urlComponents.scheme = "https"
+        urlComponents.host = baseURL
+        urlComponents.path = path
+        urlComponents.queryItems = queryItems
+        return urlComponents.url
+    }
 }
 
 enum HTTPMethod: String {

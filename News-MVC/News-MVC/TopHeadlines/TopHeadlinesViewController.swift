@@ -9,22 +9,26 @@
 import UIKit
 
 class TopHeadlinesViewController: UIViewController {
+    let newsAPIRouter = NewsAPIRouter()
+
+    var articles: [Article] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        fetchTopHeadlines()
     }
-    
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func fetchTopHeadlines() {
+        newsAPIRouter.fetchTopHeadlines(country: "us",
+                                        sources: nil,
+                                        category: nil,
+                                        query: nil) { (result: Result<TopHeadlines, Error>) in
+            switch result {
+            case .success(let topHeadlines):
+                self.articles = topHeadlines.articles
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
-    */
-
 }

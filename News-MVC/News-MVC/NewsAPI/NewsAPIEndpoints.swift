@@ -15,26 +15,22 @@ enum NewsAPI {
 }
 
 extension NewsAPI: Endpoint {
-    var baseURL: URL? {
-        guard let url = URL(string: "https://newsapi.org/v2/") else {
-            return nil
-        }
-        return url
+    var baseURL: String? {
+        "newsapi.org"
     }
 
     var path: String {
         switch self {
         case .topHeadlines:
-            return "top-headlines"
+            return "/v2/top-headlines"
         case .everything:
-            return "everything"
+            return "/v2/everything"
         case .sources:
-            return "sources"
+            return "/v2/sources"
         }
     }
 
     var queryItems: [URLQueryItem] {
-
         switch self {
         case .topHeadlines(let country, let sources, let category, let query):
             return getTopHeadlinesQueryItems(country: country, sources: sources, category: category, query: query)
@@ -56,6 +52,7 @@ private extension NewsAPI {
         if let sources = sources { topHeadlinesQueryItems.append(URLQueryItem(name: "sources", value: sources)) }
         if let category = category { topHeadlinesQueryItems.append(URLQueryItem(name: "category", value: category)) }
         if let query = query { topHeadlinesQueryItems.append(URLQueryItem(name: "query", value: query)) }
+        topHeadlinesQueryItems.append(URLQueryItem(name: "apiKey", value: "9ae791cc00924bd58baa6f0efad605c1"))
         return topHeadlinesQueryItems
     }
 
