@@ -10,21 +10,21 @@ import Foundation
 
 final class NetworkFactory {
     let urlSession = URLSession(configuration: URLSessionConfiguration.default)
-
-    func fetch<T: Codable>(url: URL,
-                           httpMethod: HTTPMethod,
-                           completion: @escaping ((Result<T, Error>) -> Void)) {
-
+    
+    func fetchJson<T: Codable>(url: URL,
+                               httpMethod: HTTPMethod,
+                               completion: @escaping ((Result<T, Error>) -> Void)) {
+        
         var request = URLRequest(url: url)
         request.httpMethod = httpMethod.rawValue
-
+        
         urlSession.dataTask(with: request) { (data, urlResponse, error) in
             if
                 let error = error {
-                    completion(.failure(error))
-                    return
+                completion(.failure(error))
+                return
             }
-
+            
             guard let data = data else {
                 let missingDataError = NSError(domain: "",
                                                code: 0,
@@ -32,13 +32,38 @@ final class NetworkFactory {
                 completion(.failure(missingDataError))
                 return
             }
-
+            
             do {
-                let news = try JSONDecoder().decode(T.self, from: data)
-                completion(.success(news))
+                completion(.success(try JSONDecoder().decode(T.self, from: data)))
             } catch {
                 completion(.failure(error))
             }
+        }.resume()
+    }
+    
+    func fetchData(url: URL,
+                   httpMethod: HTTPMethod,
+                   completion: @escaping ((Result<Data, Error>) -> Void)) {
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = httpMethod.rawValue
+        
+        urlSession.dataTask(with: request) { (data, urlResponse, error) in
+            if
+                let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let data = data else {
+                let missingDataError = NSError(domain: "",
+                                               code: 0,
+                                               userInfo: [NSLocalizedDescriptionKey: "Missing data from url: \(url.absoluteString)"]) as Error
+                completion(.failure(missingDataError))
+                return
+            }
+            
+            completion(.success(data))
         }.resume()
     }
 }
