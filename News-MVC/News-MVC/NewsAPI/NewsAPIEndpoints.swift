@@ -8,13 +8,13 @@
 
 import Foundation
 
-enum NewsAPI {
+enum NewsAPIEndpoint {
     case topHeadlines(country: String?, sources: String?, category: String?, query: String?)
     case everything(domains: String?, sortBy: String?, from: String?, to: String?)
     case sources(language: String?, country: String?)
 }
 
-extension NewsAPI: Endpoint {
+extension NewsAPIEndpoint: Endpoint {
     var baseURL: String? {
         "newsapi.org"
     }
@@ -45,7 +45,7 @@ extension NewsAPI: Endpoint {
 }
 
 
-private extension NewsAPI {
+private extension NewsAPIEndpoint {
     func getTopHeadlinesQueryItems(country: String?, sources: String?, category: String?, query: String?) -> [URLQueryItem] {
         var topHeadlinesQueryItems: [URLQueryItem] = []
         if let country = country { topHeadlinesQueryItems.append(URLQueryItem(name: "country", value: country)) }

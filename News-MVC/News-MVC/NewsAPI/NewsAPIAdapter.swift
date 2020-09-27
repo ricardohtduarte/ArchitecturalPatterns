@@ -8,15 +8,11 @@
 
 import Foundation
 
-final class NewsAPIRouter {
+final class NewsAPIAdapter {
     let network: NetworkFactory = NetworkFactory()
 
-    func fetchTopHeadlines(country: String?,
-                           sources: String?,
-                           category: String?,
-                           query: String?,
-                           completion: @escaping (Result<TopHeadlines, Error>) -> Void) {
-        let endpoint = NewsAPI.topHeadlines(country: country, sources: sources, category: category, query: query)
+    func fetchArticles(endpoint: NewsAPIEndpoint,
+                       completion: @escaping (Result<TopHeadlines, Error>) -> Void) {
         guard let url = endpoint.url else {
             fatalError("Error: could not create TopHeadlines URL")
         }
